@@ -3,5 +3,6 @@
 @section('content')
 <div class="container">
     <customer-component></customer-component>
-    </div>
+    <vue-progress-bar></vue-progress-bar>
+ </div>
 @endsection

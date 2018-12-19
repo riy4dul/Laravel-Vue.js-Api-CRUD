@@ -13,17 +13,38 @@
                                     <th scope="col">#</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Email</th>
-                                    <th scope="col">Handle</th>
+                                    <th scope="col">Phone</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col" class="text-center">Action</th>
                                 </tr>
                                 </thead>
-                                <tbody>
-                                <tr v-for="cutomar in cutomars">
-                                    <th scope="row">{{ cutomar.id }}</th>
-                                    <td>{{ cutomar.name }}</td>
-                                    <td>{{ cutomar.email }}</td>
-                                    <td>{{ cutomar.phone }}</td>
-                                </tr>
-                                </tbody>
+                                 <tbody>
+                               <tr v-show="customers.length" v-for="(customer, index) in customers" :key="customer.id">
+                                   <th scope="row">{{ index + 1 }}</th>
+                                   <td>{{ customer.name}}</td>
+                                   <td>{{ customer.email }}</td>
+                                   <td>{{ customer.phone }}</td>
+                                   <td>{{ customer.total }}</td>
+                                   <td class="text-center">
+                                       <button type="button" class="btn btn-info btn-sm">
+                                           <i class="fas fa-eye"></i>
+                                       </button>
+                                       <button type="button" class="btn btn-primary btn-sm">
+                                           <i class="fas fa-edit"></i>
+                                       </button>
+                                       <button type="button" class="btn btn-danger btn-sm">
+                                           <i class="fas fa-trash-alt"></i>
+                                       </button>
+                                   </td>
+                               </tr>
+                               <tr v-show="!customers.length">
+                                   <td colspan="6">
+                                       <div class="alert alert-danger" role="alert">
+                                           Sorry :( No data found.
+                                       </div>
+                                   </td>
+                               </tr>
+                               </tbody>
                             </table>
                         </div>
                     </div>
@@ -37,26 +58,27 @@
     export default {
         data() {
             return {
-                cutomars: "",
+                customers: "",
             }
         },
 
-        created() {
-            this.fetchCumtomar();
+        mounted() {
+            this.getData();
         },
-
-
         methods: {
-            fetchCumtomar() {
-                axios.get('/customersList')
+            getData(){
+                 this.$Progress.start()
+                axios.get('/api/customers')
                     .then(response => {
-                        this.cutomars = response.data;
-                        console.log(response);
+                        this.customers = response.data.data
+                        this.pagination = response.data.meta
+                        this.$Progress.finish()
                     })
-                    .catch(error => {
-                        console.log(error)
+                    .catch(e => {
+                        console.log(e)
+                        this.$Progress.fail()
                     })
             }
-        }
     }
+}
 </script>
